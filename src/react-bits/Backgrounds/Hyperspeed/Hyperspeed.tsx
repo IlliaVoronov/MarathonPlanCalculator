@@ -2,7 +2,7 @@
 	Installed from https://reactbits.dev/ts/tailwind/
 */
 
-import { useEffect, useRef, FC } from "react";
+import { useEffect, useRef, type FC } from "react";
 import * as THREE from "three";
 import {
   BloomEffect,
@@ -808,7 +808,7 @@ class Road {
     this.uTime = { value: 0 };
   }
 
-  createPlane(side: number, width: number, isRoad: boolean) {
+  createPlane(side: number, isRoad: boolean) {
     const options = this.options;
     const segments = 100;
     const geometry = new THREE.PlaneGeometry(
