@@ -5,7 +5,8 @@ import App from './App.tsx'
 import { createBrowserRouter, RouterProvider } from 'react-router'
 import QuestionsPage from './pages/QuestionsPage.tsx'
 import NotFoundPage from './pages/NotFoundPage.tsx'
-import { QuestionsProvider } from './components/QuestionsContext.tsx'
+import { QuestionsProvider } from './context/QuestionsProvider.tsx'
+
 
 const router = createBrowserRouter([
   { path: "/", element: <App /> },

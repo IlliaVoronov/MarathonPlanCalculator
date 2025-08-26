@@ -17,6 +17,14 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: black;
+  z-index: -11;
+}
+
 
 
 body {

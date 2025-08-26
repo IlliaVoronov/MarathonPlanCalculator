@@ -1,4 +1,6 @@
-import React, { createContext, useState, type ReactNode, type SetStateAction } from "react"
+import { useState, type ReactNode } from "react";
+import { QuestionsContext } from "./QuestionsContext";
+
 
 interface AnswerOption {
   id: number;
@@ -7,7 +9,7 @@ interface AnswerOption {
 
 type AnswerType = "multiple-choice" | "number" | "date";
 
-interface Question {
+export interface Question {
   id: number;
   question: string;
   userAnswerType: AnswerType; 
@@ -73,13 +75,6 @@ const initialQuestions: Question[] = [
   }
 
 ]
-
-interface QuestionsContextType {
-  questions: Question[];
-  setQuestions: React.Dispatch<SetStateAction<Question[]>>;
-}
-
-export const QuestionsContext = createContext<QuestionsContextType | undefined>(undefined);
 
 export function QuestionsProvider({ children }: { children: ReactNode }) {
   const [questions, setQuestions] = useState<Question[]>(initialQuestions);

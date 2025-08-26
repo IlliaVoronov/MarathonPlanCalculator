@@ -1,5 +1,5 @@
 import { useContext, useState } from "react"
-import { QuestionsContext } from "../components/QuestionsContext"
+import { QuestionsContext } from "../context/QuestionsContext"
 
 
 

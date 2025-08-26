@@ -12,9 +12,9 @@ export default function App() {
 
 
   return (
-    <div className="min-h-screen min-w-screen">
+    <div className="min-h-screen min-w-screen ">
 
-      <header className="relative flex flex-col items-center text-center justify-center h-[100vh]  overflow-hidden font-extrabold">
+      <header className="relative flex flex-col gap-20 items-center text-center justify-center h-[100vh]  overflow-hidden font-extrabold ">
 
         <div className="absolute inset-0 w-full h-full -z-10">
           <Hyperspeed
@@ -57,9 +57,9 @@ export default function App() {
             }}
           />
         </div>
-        <h1>Welcome to the marathon training plan creator.</h1>
+        <h1 className="text-white text-3xl">Welcome to the marathon training plan creator.</h1>
         <Link to={"/questions"}>
-          <button onClick={() => console.log("Click")} className="bg-secondary py-3 px-4 text-2xl rounded-2xl hover:bg-black hover:text-primary transition-all duration-300 dark:text-black">Make a plan for me</button>
+          <button onClick={() => console.log("Click")} className="bg-secondary py-3 px-4 text-2xl rounded-2xl hover:bg-black hover:text-primary transition-all duration-300 cursor-pointer dark:text-black">Make a plan for me</button>
         </Link>
       </header>
 
