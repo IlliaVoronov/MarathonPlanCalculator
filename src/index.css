@@ -4,6 +4,7 @@
 @theme {
   --color-primary: hsl(289, 100%, 79%);
   --color-secondary: hsl(80deg 89% 62%);
+  --color-inactive: hsl(80, 54%, 55%);
 }
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;

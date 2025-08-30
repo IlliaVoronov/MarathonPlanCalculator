@@ -59,7 +59,7 @@ export default function App() {
         </div>
         <h1 className="text-white text-3xl">Welcome to the marathon training plan creator.</h1>
         <Link to={"/questions"}>
-          <button onClick={() => console.log("Click")} className="bg-secondary py-3 px-4 text-2xl rounded-2xl hover:bg-black hover:text-primary transition-all duration-300 cursor-pointer dark:text-black">Make a plan for me</button>
+          <button onClick={() => console.log("Click")} className="bg-secondary py-3 px-4 text-2xl  rounded hover:bg-black hover:text-primary transition-all duration-300 cursor-pointer dark:text-black">Make a plan for me</button>
         </Link>
       </header>
 
