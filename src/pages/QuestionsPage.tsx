@@ -165,6 +165,7 @@ export default function QuestionsPage() {
               animate
               mode="single"
               month={month}
+              onMonthChange={setMonth}
               selected={selected}
               disabled={{ before: tomorrow }}
               onSelect={(date) => {
