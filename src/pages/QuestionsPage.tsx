@@ -2,6 +2,9 @@ import { useContext, useState } from "react";
 import { QuestionsContext } from "../context/QuestionsContext";
 import { ArrowIconLeft, ArrowIconRight } from "../assets/svgs";
 import ChoseAnswerWarning from "../components/ChoseAnswerWarning";
+import { useNavigate } from "react-router-dom";
+import { DayPicker } from "react-day-picker";
+import "react-day-picker/style.css";
 
 
 
@@ -10,6 +13,8 @@ export default function QuestionsPage() {
   const context = useContext(QuestionsContext);
   const [questionNumber, setQuestionNumber] = useState(0);
   const [showWarning, setShowWarning] = useState(false); // for asking user for input before clicking "next"
+  const [selected, setSelected] = useState<Date>();
+  const navigate = useNavigate();
 
 
   if (!context) {
@@ -38,7 +43,7 @@ export default function QuestionsPage() {
             const selected = q.userAnswer.selectedMultipleOptionIds ?? [];
             const alreadySelected = selected.includes(value as number);
 
-            setShowWarning(false); 
+            setShowWarning(false);
 
             return {
               ...q,
@@ -74,7 +79,7 @@ export default function QuestionsPage() {
     if (questionNumber < questions.length - 1 && isAnswered(questions[questionNumber].id)) {
       setQuestionNumber(prev => prev + 1);
     } else {
-      //add link to the calculation and display of the plan
+      navigate("/plan");
     }
   }
 
@@ -110,7 +115,7 @@ export default function QuestionsPage() {
               key={option.id}
               onClick={() => handleAnswerChange(questions[questionNumber].id, option.id)}
               className={`mr-2 px-3 py-1 border rounded cursor-pointer
-                  ${questions[questionNumber].userAnswer.selectedMultipleOptionIds?.includes(option.id)  ? "bg-red-700 text-white" : "hover:bg-black hover:text-primary transition-all delay-100"}`}
+                  ${questions[questionNumber].userAnswer.selectedMultipleOptionIds?.includes(option.id) ? "bg-red-700 text-white" : "hover:bg-black hover:text-primary transition-all delay-100"}`}
             >
               {option.text}
             </button>
@@ -140,15 +145,35 @@ export default function QuestionsPage() {
         )}
 
         {questions[questionNumber].userAnswerType === "date" && (
-          <input
-            type="date"
-            onChange={e => handleAnswerChange(questions[questionNumber].id, new Date(e.target.value))}
-            className="border px-2 py-1 rounded"
-          />
+          <div>
+            <DayPicker
+              style={{
+                '--rdp-accent-color': 'hsl(80deg 89% 62%)',
+                '--rdp-accent-hover-color': 'hsl(80deg 89% 62%)',
+              } as React.CSSProperties}
+              animate
+              mode="single"
+              selected={selected}
+              onSelect={(date) => {
+                if (date) {
+                  setSelected(date); // update local DayPicker state
+                  handleAnswerChange(questions[questionNumber].id, date); // update context
+                }
+              }}
+              footer={
+                selected
+                  ? `Selected: ${selected.toLocaleDateString()}`
+                  : "Pick a day."
+              }
+            />
+
+          </div>
         )}
 
       </div>
 
+
+      {/* ////////// NAVIGATION BUTTONS ////////// */}
       <div className="flex gap-18 mb-20">
         <button
           onClick={() => {
@@ -167,7 +192,6 @@ export default function QuestionsPage() {
             handleNextButton();
             setShowWarning(!isAnswered(questions[questionNumber].id));
           }}
-          // disabled={!isAnswered(questions[questionNumber].id)}
           className={`flex flex-nowrap gap-2  justify-center items-center group text-center px-4 py-4 border rounded-xl cursor-pointer transition-all duration-100 ${isAnswered(questions[questionNumber].id) ? "bg-secondary text-black hover:bg-black hover:text-primary" : "text-gray-500 bg-inactive"}`}>
           {questionNumber === questions.length - 1 ? "Finish" : "Next"}
           <div className={` w-4 h-4 ${isAnswered(questions[questionNumber].id) ? "text-black group-hover:text-primary transition-all duration-100" : "text-gray-500"}`}><ArrowIconRight /></div>
