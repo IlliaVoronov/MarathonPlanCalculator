@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom"
-import Hyperspeed from "./react-bits/Backgrounds/Hyperspeed/Hyperspeed"
+import { lazy} from "react";
+const Hyperspeed = lazy(() => import("./react-bits/Backgrounds/Hyperspeed/Hyperspeed"));
 import { useEffect } from "react";
 
 
@@ -27,10 +28,10 @@ export default function App() {
               islandWidth: 2,
               lanesPerRoad: 4,
               fov: 90,
-              fovSpeedUp: 150,
+              fovSpeedUp: 0,
               speedUp: 2,
               carLightsFade: 0.4,
-              totalSideLightSticks: 20,
+              totalSideLightSticks: 10,
               lightPairsPerRoadWay: 40,
               shoulderLinesWidthPercentage: 0.05,
               brokenLinesWidthPercentage: 0.1,

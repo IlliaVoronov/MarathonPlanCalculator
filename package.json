@@ -20,6 +20,7 @@
     "react-dom": "^19.1.1",
     "react-router": "^7.8.1",
     "react-router-dom": "^7.8.1",
+    "react-swipeable": "^7.0.2",
     "tailwindcss": "^4.1.12",
     "tailwindcss-animated": "^2.0.0",
     "three": "^0.167.1"

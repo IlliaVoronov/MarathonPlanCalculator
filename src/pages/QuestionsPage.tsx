@@ -5,6 +5,8 @@ import ChoseAnswerWarning from "../components/ChoseAnswerWarning";
 import { useNavigate } from "react-router-dom";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/style.css";
+import { useSwipeable } from "react-swipeable";
+import { addMonths, subMonths } from "date-fns";
 
 
 
@@ -90,6 +92,15 @@ export default function QuestionsPage() {
   }
 
 
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const [month, setMonth] = useState(new Date());
+
+  const handlers = useSwipeable({
+    onSwipedLeft: () => setMonth(prev => addMonths(prev, 1)),
+    onSwipedRight: () => setMonth(prev => subMonths(prev, 1)),
+  });
+
 
 
   return (
@@ -145,7 +156,7 @@ export default function QuestionsPage() {
         )}
 
         {questions[questionNumber].userAnswerType === "date" && (
-          <div>
+          <div {...handlers}>
             <DayPicker
               style={{
                 '--rdp-accent-color': 'hsl(80deg 89% 62%)',
@@ -153,20 +164,16 @@ export default function QuestionsPage() {
               } as React.CSSProperties}
               animate
               mode="single"
+              month={month}
               selected={selected}
+              disabled={{ before: tomorrow }}
               onSelect={(date) => {
                 if (date) {
                   setSelected(date); // update local DayPicker state
                   handleAnswerChange(questions[questionNumber].id, date); // update context
                 }
               }}
-              footer={
-                selected
-                  ? `Selected: ${selected.toLocaleDateString()}`
-                  : "Pick a day."
-              }
             />
-
           </div>
         )}
 
