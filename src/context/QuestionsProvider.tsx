@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { QuestionsContext } from "./QuestionsContext";
 
 
@@ -7,7 +7,7 @@ interface AnswerOption {
   text: string;
 }
 
-export type AnswerType = "multiple-choice" | "number" | "date" | "one-choice";
+export type AnswerType = "multiple-choice" | "number" | "date" | "one-choice" | "number-time";
 
 export interface Question {
   id: number;
@@ -19,6 +19,7 @@ export interface Question {
     selectedMultipleOptionIds?: number[];
     numberResponse?: number;
     dateResponse?: Date;
+    timeResponse?: { hours: number; minutes: number };
   }; 
 }
 
@@ -49,10 +50,10 @@ const initialQuestions: Question[] = [
   },
   {
     id: 4,
-    question: "Have you done running before?",
+    question: "What is your running expirience?",
     userAnswerType: "one-choice",
     answerOptions: [
-      { id: 401, text: "No"}, { id: 402, text: "Yes, less then 10km"}, { id: 403, text: "Yes, more then 10km"}, { id: 404, text: "Yes, Half a Marathon"}, { id: 405, text: "Yes, a Full-Marathon"}
+      { id: 401, text: "Beginner"}, { id: 402, text: "Ran more then 10 km."}, { id: 403, text: "Experienced runner"}, { id: 404, text: "Proffesional"}
     ],
     userAnswer: {}
   },
@@ -83,16 +84,47 @@ const initialQuestions: Question[] = [
     ],
     userAnswer: {}
   },
+  {
+    id: 9,
+    question: "What is you desired finish time time?",
+    userAnswerType: "number-time",
+    userAnswer: {}
+  },
 
 ]
 
+
+// localStorage.clear() to update questions in browser
+
+const QUESTIONS_VERSION = "v3";
+
 export function QuestionsProvider({ children }: { children: ReactNode }) {
-  
-  const [questions, setQuestions] = useState<Question[]>(initialQuestions);
+  const [questions, setQuestions] = useState<Question[]>(() => {
+    const saved = localStorage.getItem("questions_" + QUESTIONS_VERSION);
+    if (saved) {
+      const parsed: Question[] = JSON.parse(saved);
+
+
+      return parsed.map((q) => ({
+        ...q,
+        userAnswer: {
+          ...q.userAnswer,
+          dateResponse: q.userAnswer.dateResponse 
+            ? new Date(q.userAnswer.dateResponse) 
+            : undefined,
+        },
+      }));
+    }
+    return initialQuestions;
+  });
+
+  useEffect(() => {
+    localStorage.setItem("questions_" + QUESTIONS_VERSION, JSON.stringify(questions));
+  }, [questions]);
 
   return (
     <QuestionsContext.Provider value={{ questions, setQuestions }}>
       {children}
     </QuestionsContext.Provider>
-  )
+  );
 }

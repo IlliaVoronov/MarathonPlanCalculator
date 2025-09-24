@@ -17,15 +17,16 @@ export default function QuestionsPage() {
   const [showWarning, setShowWarning] = useState(false); // for asking user for input before clicking "next"
   const [selected, setSelected] = useState<Date>();
   const navigate = useNavigate();
-
-
   if (!context) {
     throw new Error("QuestionsContext must be used within a QuestionsProvider");
   }
-
   const { questions, setQuestions } = context;
+  const answerType = questions[questionNumber].userAnswerType;
 
-  function handleAnswerChange(questionId: number, value: number | Date) {
+
+
+
+  function handleAnswerChange(questionId: number, value: number | Date | { hours?: number; minutes?: number }) {
     setQuestions(prev =>
       prev.map(q => {
         if (q.id !== questionId) return q;
@@ -52,14 +53,25 @@ export default function QuestionsPage() {
               userAnswer: {
                 ...q.userAnswer,
                 selectedMultipleOptionIds: alreadySelected
-                  ? selected.filter(id => id !== (value as number)) // remove if already selected
-                  : [...selected, value as number], // add if not selected
+                  ? selected.filter(id => id !== (value as number))
+                  : [...selected, value as number],
               },
             };
           }
 
           case "number":
             return { ...q, userAnswer: { numberResponse: value as number } };
+          case "number-time":
+            return {
+              ...q,
+              userAnswer: {
+                ...q.userAnswer,
+                timeResponse: {
+                  hours: (value as { hours?: number; minutes?: number }).hours ?? q.userAnswer.timeResponse?.hours ?? 0,
+                  minutes: (value as { hours?: number; minutes?: number }).minutes ?? q.userAnswer.timeResponse?.minutes ?? 0,
+                },
+              },
+            };
           case "date":
             return { ...q, userAnswer: { dateResponse: value as Date } };
           default:
@@ -70,10 +82,17 @@ export default function QuestionsPage() {
   }
 
   function isAnswered(questionId: number): boolean {
-    const question = questions.find(q => q.id === questionId);
-    if (!question) return false;
+    const q = questions.find(q => q.id === questionId);
+    if (!q) return false;
 
-    return Object.values(question.userAnswer).some(val => val !== undefined);
+    if (q.userAnswerType === "number-time") {
+      return (
+        q.userAnswer.timeResponse?.hours !== undefined &&
+        q.userAnswer.timeResponse?.minutes !== undefined
+      );
+    } else {
+      return Object.values(q.userAnswer).some(val => val !== undefined);
+    }
   }
 
 
@@ -108,7 +127,7 @@ export default function QuestionsPage() {
       <h2 className="mt-40 ">{questionNumber === questions.length ? "" : `${questions[questionNumber].question}`}</h2>
 
       <div>
-        {questions[questionNumber].userAnswerType === "one-choice" &&
+        {answerType === "one-choice" &&
           questions[questionNumber].answerOptions?.map(option => (
             <button
               key={option.id}
@@ -120,7 +139,7 @@ export default function QuestionsPage() {
             </button>
           ))}
 
-        {questions[questionNumber].userAnswerType === "multiple-choice" &&
+        {answerType === "multiple-choice" &&
           questions[questionNumber].answerOptions?.map(option => (
             <button
               key={option.id}
@@ -132,30 +151,65 @@ export default function QuestionsPage() {
             </button>
           ))}
 
-        {questions[questionNumber].userAnswerType === "number" && (
-          <input
-            type="number"
-            min={13}
-            max={120}
-            onChange={e => {
-              const value = Number(e.target.value);
-
-              if (value < 13) {
-                // setToastMessage("Sorry, you should grow up before running a marathon");
-
-              }
-              if (value > 120) {
-                // setToastMessage("Sorry, you are too old for a marathon");
-              }
-
-              handleAnswerChange(questions[questionNumber].id, value);
-            }}
-
-            className="border px-6 py-5 rounded"
-          />
+        {answerType === "number" && (
+          <div className="flex gap-4 justify-center text-center items-center">
+            <input
+              type="number"
+              min={13}
+              max={120}
+              onChange={e => {
+                const value = Number(e.target.value);
+  
+                if (value < 13) {
+                  // setToastMessage("Sorry, you should grow up before running a marathon");
+  
+                }
+                if (value > 120) {
+                  // setToastMessage("Sorry, you are too old for a marathon");
+                }
+  
+                handleAnswerChange(questions[questionNumber].id, value);
+              }}
+  
+              className="border px-6 py-5 rounded"
+            />
+            <div>
+              {questions[questionNumber].id === 3 && "years old"}
+              {questions[questionNumber].id === 5 && "centimeters"}
+              {questions[questionNumber].id === 6 && "kg."}
+            </div>
+          </div>
         )}
 
-        {questions[questionNumber].userAnswerType === "date" && (
+        {answerType === "number-time" && (
+          <div className="flex gap-2 items-center">
+            <input
+              type="number"
+              min={0}
+              max={23}
+              value={questions[questionNumber].userAnswer.timeResponse?.hours ?? ""}
+              onChange={(e) =>
+                handleAnswerChange(questions[questionNumber].id, { hours: Number(e.target.value) })
+              }
+              className="w-16 border rounded p-2 text-center"
+            />
+            <div>Hr.</div>
+            <input
+              type="number"
+              min={0}
+              max={59}
+              value={questions[questionNumber].userAnswer.timeResponse?.minutes ?? ""}
+              onChange={(e) =>
+                handleAnswerChange(questions[questionNumber].id, { minutes: Number(e.target.value) })
+              }
+              className="w-16 border rounded p-2 text-center"
+            />
+            <div>Min.</div>
+          </div>
+        )}
+
+
+        {answerType === "date" && (
           <div {...handlers}>
             <DayPicker
               style={{
@@ -197,8 +251,11 @@ export default function QuestionsPage() {
 
         <button
           onClick={() => {
+            if (!isAnswered(questions[questionNumber].id)) {
+              setShowWarning(true); // show error
+              return;
+            }
             handleNextButton();
-            setShowWarning(!isAnswered(questions[questionNumber].id));
           }}
           className={`flex flex-nowrap gap-2  justify-center items-center group text-center px-4 py-4 border rounded-xl cursor-pointer transition-all duration-100 ${isAnswered(questions[questionNumber].id) ? "bg-secondary text-black hover:bg-black hover:text-primary" : "text-gray-500 bg-inactive"}`}>
           {questionNumber === questions.length - 1 ? "Finish" : "Next"}
