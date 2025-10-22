@@ -7,7 +7,7 @@ import QuestionsPage from './pages/QuestionsPage.tsx'
 import NotFoundPage from './pages/NotFoundPage.tsx'
 import { QuestionsProvider } from './context/QuestionsProvider.tsx'
 import PlanResultsPage from './pages/PlanResultsPage.tsx'
-import { SpeedInsights } from "@vercel/speed-insights/next"
+import { SpeedInsights } from "@vercel/speed-insights/react"
 
 
 const router = createBrowserRouter([
