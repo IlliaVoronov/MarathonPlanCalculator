@@ -7,6 +7,7 @@ import QuestionsPage from './pages/QuestionsPage.tsx'
 import NotFoundPage from './pages/NotFoundPage.tsx'
 import { QuestionsProvider } from './context/QuestionsProvider.tsx'
 import PlanResultsPage from './pages/PlanResultsPage.tsx'
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 
 const router = createBrowserRouter([
@@ -20,6 +21,7 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QuestionsProvider>
       <RouterProvider router={router} />
+      <SpeedInsights/>
     </QuestionsProvider>
   </StrictMode>,
 )
