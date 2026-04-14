@@ -12,8 +12,12 @@ export interface DayPlan {
   date: string;
   label: string;
   dayName: string;
+  type: "rest" | "easy" | "tempo" | "long";
   workout: string;
+  preview: string;
+  description: string;
   distanceKm: number;
+  paceMinPerKm?: number;
 }
 
 export interface WeekPlan {
@@ -79,18 +83,34 @@ export function generatePlan(input: PlanInput): WeekPlan[] {
       }
 
       const weekday = currentDate.getDay();
+      let type: DayPlan["type"] = "rest";
       let workout = "Rest";
+      let preview = "Rest";
+      let description = "Recovery day. Focus on sleep, hydration, and easy mobility work.";
       let distanceKm = 0;
+      let sessionPaceMinPerKm: number | undefined;
 
       if (selectedDays.includes(weekday)) {
         if (weekday === longRunDay) {
-          workout = `Long run @ ${(paceMinPerKm * 1.2).toFixed(2)} min/km`;
+          type = "long";
+          sessionPaceMinPerKm = Number((paceMinPerKm * 1.2).toFixed(2));
+          workout = `Long run @ ${sessionPaceMinPerKm.toFixed(2)} min/km`;
+          preview = `Long ${longRunKm} km`;
+          description = `Long aerobic run for ${longRunKm} km. Keep the effort controlled at about ${sessionPaceMinPerKm.toFixed(2)} min/km and avoid pushing the final kilometers.`;
           distanceKm = longRunKm;
         } else if (weekday === workoutDay) {
-          workout = `Tempo run @ ${(paceMinPerKm * 0.92).toFixed(2)} min/km`;
+          type = "tempo";
+          sessionPaceMinPerKm = Number((paceMinPerKm * 0.92).toFixed(2));
+          workout = `Tempo run @ ${sessionPaceMinPerKm.toFixed(2)} min/km`;
+          preview = `Tempo ${tempoKm} km`;
+          description = `Tempo session for ${tempoKm} km at about ${sessionPaceMinPerKm.toFixed(2)} min/km. Start with an easy warm-up, settle into a steady hard rhythm, and finish with a short cool-down.`;
           distanceKm = tempoKm;
         } else {
-          workout = `Easy run @ ${(paceMinPerKm * 1.25).toFixed(2)} min/km`;
+          type = "easy";
+          sessionPaceMinPerKm = Number((paceMinPerKm * 1.25).toFixed(2));
+          workout = `Easy run @ ${sessionPaceMinPerKm.toFixed(2)} min/km`;
+          preview = `Easy ${easyRunKm} km`;
+          description = `Easy mileage for ${easyRunKm} km at about ${sessionPaceMinPerKm.toFixed(2)} min/km. Keep the effort conversational and relaxed.`;
           distanceKm = easyRunKm;
         }
       }
@@ -99,8 +119,12 @@ export function generatePlan(input: PlanInput): WeekPlan[] {
         date: format(currentDate, "yyyy-MM-dd"),
         label: format(currentDate, "dd MMM yyyy"),
         dayName: format(currentDate, "EEEE"),
+        type,
         workout,
+        preview,
+        description,
         distanceKm,
+        paceMinPerKm: sessionPaceMinPerKm,
       });
     }
 

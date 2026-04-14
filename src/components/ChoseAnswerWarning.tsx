@@ -1,7 +1,20 @@
 import type { AnswerType } from "../context/QuestionsProvider";
 
 
-export default function ChoseAnswerWarning({ questionType }: { questionType: AnswerType }) {
+export default function ChoseAnswerWarning({
+  questionType,
+  customMessage,
+}: {
+  questionType: AnswerType;
+  customMessage?: string;
+}) {
+  if (customMessage) {
+    return (
+      <div className="fixed bottom-40 left-1/2 -translate-x-1/2 bg-red-600 text-white min-w-[70%] md:min-w-0 px-6 py-3 rounded-xl shadow-lg animate-fade-up animate-duration-[400ms]">
+        <h4 className="text-lg font-bold">{customMessage}</h4>
+      </div>
+    );
+  }
 
   let message: string | null = null;
 
@@ -28,5 +41,5 @@ export default function ChoseAnswerWarning({ questionType }: { questionType: Ans
     <div className="fixed bottom-40 left-1/2 -translate-x-1/2 bg-red-600 text-white min-w-[70%] md:min-w-0 px-6 py-3 rounded-xl shadow-lg animate-fade-up animate-duration-[400ms]">
       <h4 className="text-lg font-bold">{message}</h4>
     </div>
-  )
+  );
 }

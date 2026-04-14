@@ -15,6 +15,7 @@ export default function QuestionsPage() {
   const context = useContext(QuestionsContext);
   const [questionNumber, setQuestionNumber] = useState(0);
   const [showWarning, setShowWarning] = useState(false); // for asking user for input before clicking "next"
+  const [warningMessage, setWarningMessage] = useState<string | undefined>(undefined);
   const [selected, setSelected] = useState<Date>();
   const navigate = useNavigate();
   if (!context) {
@@ -26,7 +27,7 @@ export default function QuestionsPage() {
 
 
 
-  function handleAnswerChange(questionId: number, value: number | Date | { hours?: number; minutes?: number }) {
+  function handleAnswerChange(questionId: number, value: number | Date | { hours?: number; minutes?: number } | undefined) {
     setQuestions(prev =>
       prev.map(q => {
         if (q.id !== questionId) return q;
@@ -47,6 +48,7 @@ export default function QuestionsPage() {
             const alreadySelected = selected.includes(value as number);
 
             setShowWarning(false);
+            setWarningMessage(undefined);
 
             return {
               ...q,
@@ -60,7 +62,7 @@ export default function QuestionsPage() {
           }
 
           case "number":
-            return { ...q, userAnswer: { numberResponse: value as number } };
+            return { ...q, userAnswer: { numberResponse: value as number | undefined } };
           case "number-time":
             return {
               ...q,
@@ -84,6 +86,10 @@ export default function QuestionsPage() {
   function isAnswered(questionId: number): boolean {
     const q = questions.find(q => q.id === questionId);
     if (!q) return false;
+
+    if (q.id === 8) {
+      return (q.userAnswer.selectedMultipleOptionIds?.length ?? 0) >= 4;
+    }
 
     if (q.userAnswerType === "number-time") {
       return (
@@ -126,6 +132,10 @@ export default function QuestionsPage() {
     <div className="flex flex-col gap-12 items-center text-center justify-between text-xl h-screen">
       <h2 className="mt-40 ">{questionNumber === questions.length ? "" : `${questions[questionNumber].question}`}</h2>
 
+      {questions[questionNumber].id === 8 && (
+        <p className="mt-[-24px] text-sm text-white/70">Choose at least 4 running days.</p>
+      )}
+
       <div>
         {answerType === "one-choice" &&
           questions[questionNumber].answerOptions?.map(option => (
@@ -154,10 +164,17 @@ export default function QuestionsPage() {
         {answerType === "number" && (
           <div className="flex gap-4 justify-center text-center items-center">
             <input
+              key={questions[questionNumber].id}
               type="number"
               min={13}
               max={120}
+              value={questions[questionNumber].userAnswer.numberResponse ?? ""}
               onChange={e => {
+                if (e.target.value === "") {
+                  handleAnswerChange(questions[questionNumber].id, undefined);
+                  return;
+                }
+
                 const value = Number(e.target.value);
   
                 if (value < 13) {
@@ -240,21 +257,35 @@ export default function QuestionsPage() {
         <button
           onClick={() => {
             handlePreviousButton();
-            if (questionNumber !== 0) { setShowWarning(false) };
+            if (questionNumber !== 0) {
+              setShowWarning(false);
+              setWarningMessage(undefined);
+            }
           }}
           className={`flex flex-nowrap gap-2 justify-center items-center group text-center px-4 py-4 border rounded-xl text-black cursor-pointer  ${questionNumber === 0 ? "text-gray-500 bg-inactive" : "bg-secondary text-black hover:bg-black hover:text-primary transition-all duration-100"}`}>
           <div className={`w-4 h-4 ${questionNumber === 0 ? "text-gray-500" : "text-black group-hover:text-primary transition-all duration-100"}`}><ArrowIconLeft /></div>
           Previous
         </button>
 
-        {showWarning && (<ChoseAnswerWarning questionType={questions[questionNumber].userAnswerType} />)}
+        {showWarning && (
+          <ChoseAnswerWarning
+            questionType={questions[questionNumber].userAnswerType}
+            customMessage={warningMessage}
+          />
+        )}
 
         <button
           onClick={() => {
             if (!isAnswered(questions[questionNumber].id)) {
+              if (questions[questionNumber].id === 8) {
+                setWarningMessage("Please choose at least 4 running days before going to the next question");
+              } else {
+                setWarningMessage(undefined);
+              }
               setShowWarning(true); // show error
               return;
             }
+            setWarningMessage(undefined);
             handleNextButton();
           }}
           className={`flex flex-nowrap gap-2  justify-center items-center group text-center px-4 py-4 border rounded-xl cursor-pointer transition-all duration-100 ${isAnswered(questions[questionNumber].id) ? "bg-secondary text-black hover:bg-black hover:text-primary" : "text-gray-500 bg-inactive"}`}>

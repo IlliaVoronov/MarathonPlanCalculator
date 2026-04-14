@@ -93,6 +93,14 @@ const initialQuestions: Question[] = [
 
 ]
 
+export function createInitialQuestions(): Question[] {
+  return initialQuestions.map((question) => ({
+    ...question,
+    answerOptions: question.answerOptions?.map((option) => ({ ...option })),
+    userAnswer: {},
+  }));
+}
+
 
 // localStorage.clear() to update questions in browser
 
@@ -115,7 +123,7 @@ export function QuestionsProvider({ children }: { children: ReactNode }) {
         },
       }));
     }
-    return initialQuestions;
+    return createInitialQuestions();
   });
 
   useEffect(() => {
