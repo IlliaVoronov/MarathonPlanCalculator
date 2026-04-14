@@ -16,6 +16,8 @@ import { Link } from "react-router-dom";
 import { QuestionsContext } from "../context/QuestionsContext";
 import { generatePlan, type DayPlan } from "../lib/planGenerator";
 import { createInitialQuestions } from "../context/QuestionsProvider";
+import { downloadGoogleCalendarFile } from "../lib/googleCalendarExport";
+import { syncRunsToGoogleCalendar } from "../lib/googleCalendarSync";
 
 const weekDayByOptionId: Record<number, number> = {
   801: 1,
@@ -39,6 +41,8 @@ function getWorkoutAccent(type: DayPlan["type"]): string {
 export default function PlanResultsPage() {
   const context = useContext(QuestionsContext);
   const [selectedDay, setSelectedDay] = useState<DayPlan | null>(null);
+  const [syncStatus, setSyncStatus] = useState<string | null>(null);
+  const [isSyncing, setIsSyncing] = useState(false);
 
   if (!context) {
     throw new Error("QuestionsContext must be used within a QuestionsProvider");
@@ -99,6 +103,21 @@ export default function PlanResultsPage() {
     setSelectedDay(null);
   }
 
+  async function handleGoogleCalendarSync() {
+    setIsSyncing(true);
+    setSyncStatus(null);
+
+    try {
+      const result = await syncRunsToGoogleCalendar(plannedDays);
+      setSyncStatus(`Google Calendar synced. Created ${result.created} events and updated ${result.updated} events.`);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Google Calendar sync failed.";
+      setSyncStatus(message);
+    } finally {
+      setIsSyncing(false);
+    }
+  }
+
   return (
     <>
       <div className="mx-auto flex min-h-screen max-w-7xl flex-col px-4 py-8 text-white sm:px-6 lg:px-8">
@@ -124,6 +143,38 @@ export default function PlanResultsPage() {
           <div className="rounded-full border border-orange-300 bg-orange-100 px-3 py-1 text-black">Tempo run</div>
           <div className="rounded-full border border-sky-300 bg-sky-100 px-3 py-1 text-black">Easy run</div>
           <div className="rounded-full border border-white/15 bg-white/5 px-3 py-1 text-white/70">Rest day</div>
+        </div>
+
+        <div className="mb-6 flex flex-col gap-3 rounded-3xl border border-white/10 bg-white/5 p-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-base font-semibold">Add all runs to Google Calendar</p>
+            <p className="text-sm text-white/70">
+              Sync directly with Google after sign-in, or download an import file as fallback.
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-2 sm:items-end">
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <button
+                type="button"
+                onClick={handleGoogleCalendarSync}
+                disabled={isSyncing}
+                className="rounded-xl border bg-secondary px-4 py-3 text-sm font-medium text-black transition-all duration-100 hover:bg-black hover:text-primary disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {isSyncing ? "Syncing..." : "Sync to Google Calendar"}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => downloadGoogleCalendarFile(plannedDays)}
+                className="rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-sm font-medium text-white transition-all duration-100 hover:bg-white/10"
+              >
+                Download .ics File
+              </button>
+            </div>
+
+            {syncStatus && <p className="max-w-md text-sm text-white/75 sm:text-right">{syncStatus}</p>}
+          </div>
         </div>
 
         <section className="rounded-3xl border border-white/10 bg-black/35 p-3 shadow-xl backdrop-blur sm:p-4">
