@@ -154,7 +154,7 @@ export default function PlanResultsPage() {
                 type="button"
                 onClick={handleGoogleCalendarSync}
                 disabled={isSyncing}
-                className="rounded-xl border bg-secondary px-4 py-3 text-sm font-medium text-black transition-all duration-100 hover:bg-black hover:text-primary disabled:cursor-not-allowed disabled:opacity-60"
+                className="rounded-xl border bg-secondary cursor-pointer px-4 py-3 text-sm font-medium text-black transition-all duration-100 hover:bg-black hover:text-primary disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {isSyncing ? "Syncing..." : "Sync to Google Calendar"}
               </button>
@@ -162,7 +162,7 @@ export default function PlanResultsPage() {
               <button
                 type="button"
                 onClick={() => downloadGoogleCalendarFile(plannedDays)}
-                className="rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-sm font-medium text-white transition-all duration-100 hover:bg-white/10"
+                className="rounded-xl border border-white/15 bg-white/5 cursor-pointer px-4 py-3 text-sm font-medium text-white transition-all duration-100 hover:bg-white/10"
               >
                 Download .ics File
               </button>
@@ -185,7 +185,7 @@ export default function PlanResultsPage() {
               type="button"
               disabled={!canGoToPreviousMonth}
               onClick={() => canGoToPreviousMonth && setVisibleMonth(new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() - 1, 1))}
-              className="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-sm transition-colors hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-40"
+              className="rounded-full cursor-pointer border border-white/10 bg-white/5 px-3 py-2 text-sm transition-colors hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-40"
             >
               Previous
             </button>
@@ -199,7 +199,7 @@ export default function PlanResultsPage() {
               type="button"
               disabled={!canGoToNextMonth}
               onClick={() => canGoToNextMonth && setVisibleMonth(new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() + 1, 1))}
-              className="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-sm transition-colors hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-40"
+              className="rounded-full cursor-pointer border border-white/10 bg-white/5 px-3 py-2 text-sm transition-colors hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-40"
             >
               Next
             </button>
@@ -282,7 +282,7 @@ export default function PlanResultsPage() {
               <button
                 type="button"
                 onClick={() => setSelectedDay(null)}
-                className="rounded-full border border-white/15 px-3 py-1 text-sm text-white/80 transition-colors hover:bg-white/10"
+                className="rounded-full cursor-pointer border border-white/15 px-3 py-1 text-sm text-white/80 transition-colors hover:bg-white/10"
               >
                 Close
               </button>
