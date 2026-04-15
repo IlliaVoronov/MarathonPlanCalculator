@@ -101,6 +101,25 @@ export function createInitialQuestions(): Question[] {
   }));
 }
 
+export function hasGeneratedPlan(questions: Question[]): boolean {
+  const age = questions[2]?.userAnswer.numberResponse;
+  const experience = questions[3]?.userAnswer.selectedOptionIds;
+  const weight = questions[5]?.userAnswer.numberResponse;
+  const marathonDate = questions[6]?.userAnswer.dateResponse;
+  const runningDays = questions[7]?.userAnswer.selectedMultipleOptionIds ?? [];
+  const desiredTime = questions[8]?.userAnswer.timeResponse;
+
+  return Boolean(
+    age !== undefined &&
+    experience !== undefined &&
+    weight !== undefined &&
+    marathonDate &&
+    runningDays.length >= 4 &&
+    desiredTime?.hours !== undefined &&
+    desiredTime?.minutes !== undefined,
+  );
+}
+
 
 // localStorage.clear() to update questions in browser
 

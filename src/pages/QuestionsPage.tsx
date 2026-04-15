@@ -7,7 +7,43 @@ import { DayPicker } from "react-day-picker";
 import "react-day-picker/style.css";
 import { useSwipeable } from "react-swipeable";
 import { addMonths, subMonths } from "date-fns";
+import type { KeyboardEvent } from "react";
 
+function getRecommendedMarathonTime(
+  age?: number,
+  weight?: number,
+  experience?: string,
+): { hours: number; minutes: number } | null {
+  if (!age || !weight || !experience) {
+    return null;
+  }
+
+  let recommendedMinutes =
+    experience === "Beginner" ? 330 :
+    experience === "Ran more then 10 km." ? 285 :
+    experience === "Experienced runner" ? 240 :
+    190;
+
+  if (age < 25) {
+    recommendedMinutes -= 5;
+  } else if (age > 35) {
+    recommendedMinutes += Math.round((age - 35) / 5) * 3;
+  }
+
+  const weightDifference = weight - 72;
+  if (weightDifference > 0) {
+    recommendedMinutes += Math.round(weightDifference / 5) * 2;
+  } else if (weightDifference < 0) {
+    recommendedMinutes -= Math.round(Math.abs(weightDifference) / 5);
+  }
+
+  recommendedMinutes = Math.min(Math.max(recommendedMinutes, 180), 390);
+
+  return {
+    hours: Math.floor(recommendedMinutes / 60),
+    minutes: recommendedMinutes % 60,
+  };
+}
 
 
 export default function QuestionsPage() {
@@ -23,6 +59,12 @@ export default function QuestionsPage() {
   }
   const { questions, setQuestions } = context;
   const answerType = questions[questionNumber].userAnswerType;
+  const age = questions[2].userAnswer.numberResponse;
+  const weight = questions[5].userAnswer.numberResponse;
+  const experience = questions[3].answerOptions?.find(
+    (option) => option.id === questions[3].userAnswer.selectedOptionIds,
+  )?.text;
+  const recommendedTime = getRecommendedMarathonTime(age, weight, experience);
 
 
 
@@ -126,14 +168,62 @@ export default function QuestionsPage() {
     onSwipedRight: () => setMonth(prev => subMonths(prev, 1)),
   });
 
+  function handleAdvanceToNextQuestion() {
+    if (!isAnswered(questions[questionNumber].id)) {
+      if (questions[questionNumber].id === 8) {
+        setWarningMessage("Please choose at least 4 running days before going to the next question");
+      } else {
+        setWarningMessage(undefined);
+      }
+      setShowWarning(true);
+      return;
+    }
+
+    setWarningMessage(undefined);
+    setShowWarning(false);
+    handleNextButton();
+  }
+
+  function handleQuestionKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    if (event.key !== "Enter") {
+      return;
+    }
+
+    const target = event.target as HTMLElement;
+    const tagName = target.tagName;
+
+    if (tagName === "BUTTON") {
+      return;
+    }
+
+    if (questions[questionNumber].userAnswerType === "multiple-choice") {
+      return;
+    }
+
+    event.preventDefault();
+    handleAdvanceToNextQuestion();
+  }
+
 
 
   return (
-    <div className="flex flex-col gap-12 items-center text-center justify-between text-xl h-screen">
+    <div
+      className="flex flex-col gap-12 items-center text-center justify-between text-xl h-screen"
+      onKeyDown={handleQuestionKeyDown}
+    >
       <h2 className="mt-40 ">{questionNumber === questions.length ? "" : `${questions[questionNumber].question}`}</h2>
 
       {questions[questionNumber].id === 8 && (
         <p className="mt-[-24px] text-sm text-white/70">Choose at least 4 running days.</p>
+      )}
+
+      {questions[questionNumber].id === 9 && recommendedTime && (
+        <p className="mt-[-24px] max-w-xl text-sm text-white/70">
+          Recommended finish time based on your age, weight and experience:{" "}
+          <span className="font-semibold text-primary">
+            {recommendedTime.hours} hr {recommendedTime.minutes.toString().padStart(2, "0")} min
+          </span>
+        </p>
       )}
 
       <div>
@@ -275,19 +365,7 @@ export default function QuestionsPage() {
         )}
 
         <button
-          onClick={() => {
-            if (!isAnswered(questions[questionNumber].id)) {
-              if (questions[questionNumber].id === 8) {
-                setWarningMessage("Please choose at least 4 running days before going to the next question");
-              } else {
-                setWarningMessage(undefined);
-              }
-              setShowWarning(true); // show error
-              return;
-            }
-            setWarningMessage(undefined);
-            handleNextButton();
-          }}
+          onClick={handleAdvanceToNextQuestion}
           className={`flex flex-nowrap gap-2  justify-center items-center group text-center px-4 py-4 border rounded-xl cursor-pointer transition-all duration-100 ${isAnswered(questions[questionNumber].id) ? "bg-secondary text-black hover:bg-black hover:text-primary" : "text-gray-500 bg-inactive"}`}>
           {questionNumber === questions.length - 1 ? "Finish" : "Next"}
           <div className={` w-4 h-4 ${isAnswered(questions[questionNumber].id) ? "text-black group-hover:text-primary transition-all duration-100" : "text-gray-500"}`}><ArrowIconRight /></div>

@@ -1,15 +1,27 @@
-import { Link } from "react-router-dom"
-import { lazy} from "react";
+import { Link, Navigate } from "react-router-dom"
+import { lazy, useContext } from "react";
 const Hyperspeed = lazy(() => import("./react-bits/Backgrounds/Hyperspeed/Hyperspeed"));
 import { useEffect } from "react";
+import { QuestionsContext } from "./context/QuestionsContext";
+import { hasGeneratedPlan } from "./context/QuestionsProvider";
 
 
 
 
 export default function App() {
+  const context = useContext(QuestionsContext);
+
   useEffect(() => {
     window.dispatchEvent(new Event("resize"));
   }, []);
+
+  if (!context) {
+    throw new Error("QuestionsContext must be used within a QuestionsProvider");
+  }
+
+  if (hasGeneratedPlan(context.questions)) {
+    return <Navigate to="/plan" replace />;
+  }
 
 
   return (
@@ -68,5 +80,4 @@ export default function App() {
     </div>
   )
 }
-
 
