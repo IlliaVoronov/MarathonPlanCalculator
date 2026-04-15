@@ -76,6 +76,8 @@ export default function PlanResultsPage() {
   }
 
   const marathonDesiredTime = time.hours * 60 + time.minutes;
+  const marathonDesiredHours = Math.floor(marathonDesiredTime / 60);
+  const marathonDesiredMinutes = marathonDesiredTime % 60;
   const plan = generatePlan({
     goalTimeMin: marathonDesiredTime,
     raceDate: dateOfTheMarathon,
@@ -124,7 +126,7 @@ export default function PlanResultsPage() {
         <div className="mb-8 rounded-3xl border border-white/10 bg-black/40 p-4 shadow-2xl backdrop-blur sm:p-6">
           <h1 className="text-2xl font-semibold sm:text-3xl">Training calendar</h1>
           <p className="mt-2 text-white/80">
-            {daysUntilMarathon} days until race day. Goal finish time: {marathonDesiredTime} minutes.
+            {daysUntilMarathon} days until race day. Goal finish time: {marathonDesiredHours} hr {marathonDesiredMinutes.toString().padStart(2, "0")} min.
           </p>
           <div className="mt-6 grid gap-3 text-sm text-white/80 sm:grid-cols-2 lg:grid-cols-4">
             <div className="rounded-2xl border border-white/10 bg-white/5 p-4">Commitment: {howSeriousAnswer}</div>
@@ -136,13 +138,6 @@ export default function PlanResultsPage() {
             <div className="rounded-2xl border border-white/10 bg-white/5 p-4">Height: {height} cm</div>
             <div className="rounded-2xl border border-white/10 bg-white/5 p-4">Weight: {weight} kg</div>
           </div>
-        </div>
-
-        <div className="mb-6 flex flex-wrap gap-3 text-sm">
-          <div className="rounded-full border border-lime-300 bg-lime-100 px-3 py-1 text-black">Long run</div>
-          <div className="rounded-full border border-orange-300 bg-orange-100 px-3 py-1 text-black">Tempo run</div>
-          <div className="rounded-full border border-sky-300 bg-sky-100 px-3 py-1 text-black">Easy run</div>
-          <div className="rounded-full border border-white/15 bg-white/5 px-3 py-1 text-white/70">Rest day</div>
         </div>
 
         <div className="mb-6 flex flex-col gap-3 rounded-3xl border border-white/10 bg-white/5 p-4 sm:flex-row sm:items-center sm:justify-between">
@@ -175,6 +170,13 @@ export default function PlanResultsPage() {
 
             {syncStatus && <p className="max-w-md text-sm text-white/75 sm:text-right">{syncStatus}</p>}
           </div>
+        </div>
+
+        <div className="mb-6 flex flex-wrap gap-3 text-sm">
+          <div className="rounded-full border border-lime-300 bg-lime-100 px-3 py-1 text-black">Long run</div>
+          <div className="rounded-full border border-orange-300 bg-orange-100 px-3 py-1 text-black">Tempo run</div>
+          <div className="rounded-full border border-sky-300 bg-sky-100 px-3 py-1 text-black">Easy run</div>
+          <div className="rounded-full border border-white/15 bg-white/5 px-3 py-1 text-white/70">Rest day</div>
         </div>
 
         <section className="rounded-3xl border border-white/10 bg-black/35 p-3 shadow-xl backdrop-blur sm:p-4">
