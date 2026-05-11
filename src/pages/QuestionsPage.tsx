@@ -214,11 +214,11 @@ export default function QuestionsPage() {
       <h2 className="mt-40 ">{questionNumber === questions.length ? "" : `${questions[questionNumber].question}`}</h2>
 
       {questions[questionNumber].id === 8 && (
-        <p className="mt-[-24px] text-sm text-white/70">Choose at least 4 running days.</p>
+        <p className="mt-[-24px] text-sm ">Choose at least 4 running days.</p>
       )}
 
       {questions[questionNumber].id === 9 && recommendedTime && (
-        <p className="mt-[-24px] max-w-xl text-sm text-white/70">
+        <p className="mt-[-24px] max-w-xl text-sm ">
           Recommended finish time based on your age, weight and experience:{" "}
           <span className="font-semibold text-primary">
             {recommendedTime.hours} hr {recommendedTime.minutes.toString().padStart(2, "0")} min

@@ -86,7 +86,7 @@ const initialQuestions: Question[] = [
   },
   {
     id: 9,
-    question: "What is you desired finish time time?",
+    question: "What is your desired finish time time?",
     userAnswerType: "number-time",
     userAnswer: {}
   },

@@ -35,7 +35,7 @@ function getWorkoutAccent(type: DayPlan["type"]): string {
   if (type === "long") return "border-lime-300 bg-lime-100/90 text-black";
   if (type === "tempo") return "border-orange-300 bg-orange-100/90 text-black";
   if (type === "easy") return "border-sky-300 bg-sky-100/90 text-black";
-  return "border-white/15 bg-white/5 text-white/60";
+  return "border-zinc-700 bg-zinc-900 text-zinc-300";
 }
 
 export default function PlanResultsPage() {
@@ -123,24 +123,24 @@ export default function PlanResultsPage() {
   return (
     <>
       <div className="mx-auto flex min-h-screen max-w-7xl flex-col px-4 py-8 text-white sm:px-6 lg:px-8">
-        <div className="mb-8 rounded-3xl border border-white/10 bg-black/40 p-4 shadow-2xl backdrop-blur sm:p-6">
+        <div className="mb-8 rounded-3xl border border-white/10 bg-zinc-950/90 p-4 shadow-2xl backdrop-blur sm:p-6">
           <h1 className="text-2xl font-semibold sm:text-3xl">Training calendar</h1>
           <p className="mt-2 text-white/80">
             {daysUntilMarathon} days until race day. Goal finish time: {marathonDesiredHours} hr {marathonDesiredMinutes.toString().padStart(2, "0")} min.
           </p>
           <div className="mt-6 grid gap-3 text-sm text-white/80 sm:grid-cols-2 lg:grid-cols-4">
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-4">Commitment: {howSeriousAnswer}</div>
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-4">Runner profile: {experience}</div>
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-4">Race date: {dateOfTheMarathon.toLocaleDateString()}</div>
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-4">Run days: {dayLabels.join(", ") || "None selected"}</div>
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-4">Gender: {gender}</div>
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-4">Age: {age}</div>
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-4">Height: {height} cm</div>
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-4">Weight: {weight} kg</div>
+            <div className="rounded-2xl border border-zinc-800 bg-zinc-900/90 p-4">Commitment: {howSeriousAnswer}</div>
+            <div className="rounded-2xl border border-zinc-800 bg-zinc-900/90 p-4">Runner profile: {experience}</div>
+            <div className="rounded-2xl border border-zinc-800 bg-zinc-900/90 p-4">Race date: {dateOfTheMarathon.toLocaleDateString()}</div>
+            <div className="rounded-2xl border border-zinc-800 bg-zinc-900/90 p-4">Run days: {dayLabels.join(", ") || "None selected"}</div>
+            <div className="rounded-2xl border border-zinc-800 bg-zinc-900/90 p-4">Gender: {gender}</div>
+            <div className="rounded-2xl border border-zinc-800 bg-zinc-900/90 p-4">Age: {age}</div>
+            <div className="rounded-2xl border border-zinc-800 bg-zinc-900/90 p-4">Height: {height} cm</div>
+            <div className="rounded-2xl border border-zinc-800 bg-zinc-900/90 p-4">Weight: {weight} kg</div>
           </div>
         </div>
 
-        <div className="mb-6 flex flex-col gap-3 rounded-3xl border border-white/10 bg-white/5 p-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mb-6 flex flex-col gap-3 rounded-3xl border border-zinc-800 bg-zinc-950/90 p-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-base font-semibold">Add all runs to Google Calendar</p>
             <p className="text-sm text-white/70">
@@ -162,7 +162,7 @@ export default function PlanResultsPage() {
               <button
                 type="button"
                 onClick={() => downloadGoogleCalendarFile(plannedDays)}
-                className="rounded-xl border border-white/15 bg-white/5 cursor-pointer px-4 py-3 text-sm font-medium text-white transition-all duration-100 hover:bg-white/10"
+                className="rounded-xl border  bg-secondary cursor-pointer px-4 py-3 text-sm font-medium text-black transition-all duration-100 hover:bg-black hover:text-primary disabled:cursor-not-allowed disabled:opacity-60"
               >
                 Download .ics File
               </button>
@@ -176,16 +176,16 @@ export default function PlanResultsPage() {
           <div className="rounded-full border border-lime-300 bg-lime-100 px-3 py-1 text-black">Long run</div>
           <div className="rounded-full border border-orange-300 bg-orange-100 px-3 py-1 text-black">Tempo run</div>
           <div className="rounded-full border border-sky-300 bg-sky-100 px-3 py-1 text-black">Easy run</div>
-          <div className="rounded-full border border-white/15 bg-white/5 px-3 py-1 text-white/70">Rest day</div>
+          <div className="rounded-full border border-zinc-700 bg-zinc-900 px-3 py-1 text-zinc-300">Rest day</div>
         </div>
 
-        <section className="rounded-3xl border border-white/10 bg-black/35 p-3 shadow-xl backdrop-blur sm:p-4">
+        <section className="rounded-3xl border border-zinc-800 bg-zinc-950/95 p-3 shadow-xl backdrop-blur sm:p-4">
           <div className="mb-4 flex items-center justify-between gap-3">
             <button
               type="button"
               disabled={!canGoToPreviousMonth}
               onClick={() => canGoToPreviousMonth && setVisibleMonth(new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() - 1, 1))}
-              className="rounded-full cursor-pointer border border-white/10 bg-white/5 px-3 py-2 text-sm transition-colors hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-40"
+              className="rounded-full cursor-pointer border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm transition-colors hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-40"
             >
               Previous
             </button>
@@ -199,7 +199,7 @@ export default function PlanResultsPage() {
               type="button"
               disabled={!canGoToNextMonth}
               onClick={() => canGoToNextMonth && setVisibleMonth(new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() + 1, 1))}
-              className="rounded-full cursor-pointer border border-white/10 bg-white/5 px-3 py-2 text-sm transition-colors hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-40"
+              className="rounded-full cursor-pointer border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm transition-colors hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-40"
             >
               Next
             </button>
@@ -231,7 +231,7 @@ export default function PlanResultsPage() {
                     isInMonth ? "opacity-100" : "opacity-30",
                     isPlannedDay
                       ? `${getWorkoutAccent(dayPlan.type)} cursor-pointer hover:-translate-y-0.5 hover:shadow-lg`
-                      : "border-white/10 bg-white/5",
+                      : "border-zinc-800 bg-zinc-900/85",
                   ].join(" ")}
                 >
                   <div className="flex items-start justify-between gap-1">
@@ -260,7 +260,7 @@ export default function PlanResultsPage() {
         <div className="mt-10 mb-20 flex justify-center">
           <Link to={"/questions"}>
             <button
-              className="flex flex-nowrap items-center justify-center gap-2 rounded-xl border bg-secondary px-4 py-4 text-center text-black transition-all duration-100 hover:bg-black hover:text-primary"
+              className="flex flex-nowrap cursor-pointer items-center justify-center gap-2 rounded-xl border bg-secondary px-4 py-4 text-center text-black transition-all duration-100 hover:bg-black hover:text-primary"
               onClick={handleResetForm}
             >
               Fill the Form Again
@@ -294,12 +294,12 @@ export default function PlanResultsPage() {
                 <p className="mt-1 text-lg font-semibold">{selectedDay.workout}</p>
               </div>
 
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+              <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-4">
                 <p className="text-sm uppercase tracking-wide text-white/50">Distance</p>
                 <p className="mt-1 text-lg">{selectedDay.distanceKm} km</p>
               </div>
 
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+              <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-4">
                 <p className="text-sm uppercase tracking-wide text-white/50">Full description</p>
                 <p className="mt-2 text-white/85">{selectedDay.description}</p>
               </div>
